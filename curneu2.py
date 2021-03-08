@@ -16,28 +16,32 @@ from sklearn.metrics import confusion_matrix
 from sklearn import metrics
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
-dataset = pd.read_csv("/content/Diabetes Database.csv")
-dataset.head()
+dataset = pd.read_csv("/content/drive/MyDrive/Diabetes Database.csv")
+#dataset.head()
+# importing the dataset form its file
 
 X = dataset.iloc[:,[0,1,2,3,4,5,6,7]]
 Y = dataset.iloc[:,8]
+# Setting up the variables for modeelling
 
-sns.pairplot(X,kind="scatter")
-plt.show()
-X.corr()
+#sns.pairplot(X,kind="scatter")
+#plt.show()
+#X.corr()
 
-from sklearn.model_selection import train_test_split  
-x_train, x_test, y_train, y_test= train_test_split(X, Y, test_size= 0.3, random_state=0)
+x_train, x_test, y_train, y_test= train_test_split(X, Y, test_size= 0.3, random_state=0) # Creating a training and testing split in the data
 
 st_x= StandardScaler()
 x_train= st_x.fit_transform(x_train)
 x_test= st_x.transform(x_test)
+# Standardising the data to enable beeter processing of data from various scales
 
 classifier= LogisticRegression(random_state=0)
 classifier.fit(x_train, y_train)
+# Building the model
 
 y_pred= classifier.predict(x_test)
 cm= confusion_matrix(y_test,y_pred)
 print("Accuracy of model is",metrics.accuracy_score(y_test, y_pred))
-
+# Assessing the value of the output we got from the model

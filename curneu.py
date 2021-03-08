@@ -14,30 +14,31 @@ from sklearn.neighbors import KNeighborsClassifier
 import xlrd 
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
 
-dataset = pd.read_excel('/fruits.xlsx')
+dataset = pd.read_excel('/content/drive/MyDrive/fruits.xlsx') # Reading data from file
 
 X = dataset.iloc[:,[2,3,4,5]]
 Y = dataset.iloc[:,0]
+# Defining variables for modelling
 
-sns.pairplot(X, kind="scatter")
-plt.show()
-X.corr()
+#sns.pairplot(X, kind="scatter")
+#plt.show()
+#X.corr()
+# Checking for relations between variables
 
-X = X.drop(labels = ['mass'],axis=1)
-X
+X = X.drop(labels = ['mass'],axis=1) # removing unnecessary variable
 
-X.corr()
+X_train, X_test, Y_train, Y_test= train_test_split(X, Y, test_size= 0.3, random_state=0)  # Creating a test and trainnig split for modelling
 
-X_train, X_test, Y_train, Y_test= train_test_split(X, Y, test_size= 0.3, random_state=0)
-
-from sklearn.preprocessing import StandardScaler    
 st_x= StandardScaler()    
 X_train= st_x.fit_transform(X_train)    
-X_test= st_x.transform(X_test)
+X_test= st_x.transform(X_test)  
+# Standardizing the data for suitable modelling
 
 classifier= KNeighborsClassifier(n_neighbors=5, metric='minkowski', p=2 )  
 classifier.fit(X_train, Y_train)
+# Fitting model
 
 y_pred= classifier.predict(X_test)
 
@@ -45,6 +46,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn import metrics
 cm= confusion_matrix(Y_test, y_pred)
 print("Accuracy of model at K=2 is",metrics.accuracy_score(Y_test, y_pred))
+# First attempt at checking accuracy of the model using the data and random seed  formed by the splitter
 
 for i in range(0,4):
   X_train, X_test, Y_train, Y_test= train_test_split(X, Y, test_size= 0.3, random_state=i)
@@ -56,3 +58,4 @@ for i in range(0,4):
   y_pred= classifier.predict(X_test)
   cm= confusion_matrix(Y_test, y_pred)
   print("Accuracy of model at K=",i," is",metrics.accuracy_score(Y_test, y_pred))
+  # Running various test cases for differnt values of the test and traing splitter so as to find differnt values as result and choosing the most suitable on for output
